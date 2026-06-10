@@ -1,0 +1,51 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` to be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    # This file intentionally grants broad permissions so the Copilot cloud agent
+    # can use GitHub MCP tools. Adjust to the minimal permissions required for
+    # your repository before merging to your default branch.
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      actions: read
+      checks: read
+      metadata: read
+      deployments: write
+      pages: write
+      packages: write
+
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup summary
+        run: |
+          echo "Copilot setup steps in place to enable GitHub MCP tools."
+
+      # Add any deterministic installation steps here (example shown):
+      - name: Install Git LFS (optional)
+        if: always()
+        run: |
+          sudo apt-get update --quiet
+          sudo apt-get install --yes git-lfs
+          git lfs install --system
+
+      - name: Validate
+        run: |
+          echo "Setup steps completed. If this workflow is present on the default branch, Copilot will run these steps before starting." 
